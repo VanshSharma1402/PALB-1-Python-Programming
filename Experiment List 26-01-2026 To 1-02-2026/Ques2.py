@@ -9,31 +9,28 @@
 
 
 class Solution:
-    def getMinDiff(self, arr, n, k):
+    def getMinDiff(self, arr, k):
+        n = len(arr)
         if n == 1:
             return 0
             
         # 1. Sort the array
         arr.sort()
         
-        # 2. Initial difference
+        # 2. Initial difference (without any modifications)
         ans = arr[n-1] - arr[0]
         
-        # 3. Traverse through the array to find the best split point
+        # 3. Greedy approach: Try every possible "split point"
+        # We increase everything before 'i' and decrease everything from 'i' onwards
         for i in range(1, n):
-            # Skip if decreasing the height results in a negative value
+            # The problem states height cannot be negative
             if arr[i] - k < 0:
                 continue
             
-            # Potential smallest height
-            # Either the first tower + k OR the current tower - k
-            temp_min = min(arr[0] + k, arr[i] - k)
+            # After modification, the new potential minimum and maximum:
+            current_min = min(arr[0] + k, arr[i] - k)
+            current_max = max(arr[i-1] + k, arr[n-1] - k)
             
-            # Potential largest height
-            # Either the last tower - k OR the previous tower + k
-            temp_max = max(arr[n-1] - k, arr[i-1] + k)
-            
-            # Update the answer with the minimum difference found
-            ans = min(ans, temp_max - temp_min)
+            ans = min(ans, current_max - current_min)
             
         return ans
